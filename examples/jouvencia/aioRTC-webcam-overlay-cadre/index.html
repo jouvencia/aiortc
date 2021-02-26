@@ -1,0 +1,60 @@
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebRTC demo</title>
+    <style>
+    button {
+        padding: 8px 16px;
+    }
+
+    pre {
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .option {
+        margin-bottom: 8px;
+    }
+    .content {
+      position: relative;
+      width: 1280px;
+      margin: 0 auto;
+    }
+    .content video {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+      z-index:1;
+    }
+    .test{
+      border: dashed red;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      right: 50%;
+      bottom: 50%;
+      width:200px;
+      height:200px;
+      margin-left:-100px;
+      margin-top:-100px;
+      }
+    </style>
+</head>
+<body>
+<h2>Menu:</h2>
+Largeur :
+<input id="width" type="number" maxlength="4" value="100"><br>
+Hauteur :
+<input id="height" type="number" maxlength="4" value="100"><br>
+<button id="start" onclick="start()">Start</button>
+<button id="stop" style="display: none" onclick="stop()">Stop</button>
+<h2>Media:</h2>
+<div id="media" class="content" style="display: none">
+    <div class="test"></div>
+    <audio id="audio" autoplay="true" ></audio>
+    <video id="video" autoplay="true" playsinline="true">Test</video>
+</div>
+<script src="client.js"></script>
+</body>
+</html>
