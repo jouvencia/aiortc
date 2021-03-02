@@ -6,13 +6,16 @@
     <style>
     button {
         padding: 8px 16px;
+        margin:5px;
     }
 
     pre {
         overflow-x: hidden;
         overflow-y: auto;
     }
-
+    input{
+        margin:5px;
+    }
     .option {
         margin-bottom: 8px;
     }
@@ -30,15 +33,12 @@
     .test{
       border: dashed red;
       position: absolute;
-<!--      center cadre:-->
       top: 50%;
       left: 50%;
       right: 50%;
       bottom: 50%;
-<!--      set cadre dimension-->
       width:200px;
       height:200px;
-<!--      move cadre to be re-centered-->
       margin-left:-100px;
       margin-top:-100px;
       }
@@ -50,11 +50,12 @@ Largeur :
 <input id="width" type="number" maxlength="4" value="100"><br>
 Hauteur :
 <input id="height" type="number" maxlength="4" value="100"><br>
+Note: shown video width: 1280px.<br>
 <button id="start" onclick="start()">Start</button>
 <button id="stop" style="display: none" onclick="stop()">Stop</button>
 <h2>Media:</h2>
 <div id="media" class="content" style="display: none">
-    <div class="test"></div>
+    <div class="test" id="cadre"> </div>
     <audio id="audio" autoplay="true" ></audio>
     <video id="video" autoplay="true" playsinline="true">Test</video>
 </div>

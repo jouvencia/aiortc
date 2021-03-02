@@ -122,24 +122,25 @@ function start() {
     } else {
         constraints.video = true;
     }
-//    get the value of number input:
     let cadrewidth = document.getElementById('width').value;
     let cadreheight = document.getElementById('height').value;
-
-    console.log(cadrewidth);
     Number(cadrewidth);
-    console.log(cadrewidth);
     Number(cadreheight);
-//    create offset that will be used to re-center the cadre:
-    let offsetwidth = -(cadrewidth - cadrewidth / 2);
-    let offsetheight = -(cadreheight - cadreheight / 2);
-//    send obtained variables to be returned on the html:
-    let cadre = document.getElementsByClassName('test');
-    cadre.setAttribute('width',cadrewidth);
-    cadre.style.height = cadreheight;
-    cadre.style.marginLeft = offsetwidth;
-    cadre.style.marginTop = offsetheight;
+    console.log(cadrewidth);
+    console.log(cadreheight);
+    let offsetwidth = cadrewidth/2;
+    let offsetheight = cadreheight/2;
+    console.log(offsetwidth);
+    console.log(offsetheight);
 
+//    let cadre = document.getElementsById("cadre");
+//    let cadrestyle = document.getElementsByClassName("test");
+    let cadre = document.querySelector('.test');
+    console.log(cadre);
+    cadre.style.width = cadrewidth+"px";
+    cadre.style.height = cadreheight+"px";
+    cadre.style.marginLeft = "-"+offsetwidth+"px";
+    cadre.style.marginTop = "-"+offsetheight+"px";
     if (constraints.audio || constraints.video) {
         if (constraints.video) {
             document.getElementById('media').style.display = 'block';
