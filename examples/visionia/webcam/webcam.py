@@ -5,7 +5,6 @@ import logging
 import os
 import platform
 import ssl
-import v4l2
 
 from aiohttp import web
 
@@ -13,6 +12,22 @@ from aiortc import RTCPeerConnection, RTCSessionDescription
 from aiortc.contrib.media import MediaPlayer
 
 ROOT = os.path.dirname(__file__)
+
+logger2 = logging.getLogger("main")
+logger2.setLevel(logging.DEBUG)
+# create console handler and set level to debug
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+# create formatter
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+# add formatter to ch
+ch.setFormatter(formatter)
+
+# add ch to logger
+logger2.addHandler(ch)
+
+
 
 
 async def index(request):
@@ -44,7 +59,9 @@ async def offer(request):
         player = MediaPlayer(args.play_from)
     else:
         options = {"framerate": "30", "video_size": "640x480"}
-        if platform.system() == "D6646465456464564646546464664646546n"://Ancien Darwin
+        print(platform.system())
+        logger2.debug(f'La plateforme est : {platform.system()}')
+        if platform.system() == "Darwin":
             player = MediaPlayer("default:none", format="avfoundation", options=options)
         else:
             player = MediaPlayer("/dev/video0", format="v4l2", options=options)
