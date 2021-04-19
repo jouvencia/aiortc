@@ -55,6 +55,9 @@ async def offer(request):
             pcs.discard(pc)
 
     # open media source
+    options = {"framerate": "10", "video_size": "640x360"}
+    player = MediaPlayer('testlqlfps.mp4')#, format="mp4", options=options))
+"""
     if args.play_from:
         player = MediaPlayer(args.play_from)
     else:
@@ -65,6 +68,7 @@ async def offer(request):
             player = MediaPlayer("default:none", format="avfoundation", options=options)
         else:
             player = MediaPlayer("/dev/video0", format="v4l2", options=options)
+"""
 
     await pc.setRemoteDescription(offer)
     for t in pc.getTransceivers():
