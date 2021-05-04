@@ -33,6 +33,16 @@ async def javascript(request):
     content = open(os.path.join(ROOT, "client.js"), "r").read()
     return web.Response(content_type="application/javascript", text=content)
 
+
+def show_info(arducam_utils):
+    _, firmware_version = arducam_utils.read_dev(ArducamUtils.FIRMWARE_VERSION_REG)
+    _, sensor_id = arducam_utils.read_dev(ArducamUtils.FIRMWARE_SENSOR_ID_REG)
+    _, serial_number = arducam_utils.read_dev(ArducamUtils.SERIAL_NUMBER_REG)
+    print("Firmware Version: {}".format(firmware_version))
+    print("Sensor ID: 0x{:04X}".format(sensor_id))
+    print("Serial Number: 0x{:08X}".format(serial_number))
+
+    
 class CamVideoStreamTrack(VideoStreamTrack):
     """
     A video track that returns an animated flag.
@@ -50,7 +60,7 @@ class CamVideoStreamTrack(VideoStreamTrack):
         cap.set(cv2.CAP_PROP_CONVERT_RGB, arducam_utils.convert2rgb)
         show_info(arducam_utils)
 
-        # Aquisition des dimentions de l'image en provenance du capteur
+        # Aquisition des dimensions de l'image en provenance du capteur
         w = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
         h = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
         for i in range(6):
@@ -63,7 +73,7 @@ class CamVideoStreamTrack(VideoStreamTrack):
 
         self.frames = []
         
-        #insert here
+        
         # loop to process the image at  manual exposure
         for i in range(30): # Nombre d'images
             for j in range (10):
@@ -99,17 +109,7 @@ async def offer(request):
         if pc.connectionState == "failed":
             await pc.close()
             pcs.discard(pc)
-        """
-    # open media source
-    if true:
-        player = new FlagVideoStreamTrack()
-    else:
-        options = {"framerate": "30", "video_size": "640x480"}
-        if platform.system() == "Darwin":
-            player = MediaPlayer("default:none", format="avfoundation", options=options)
-        else:
-            player = MediaPlayer("/dev/video0", format="v4l2", options=options)
-        """
+
     await pc.setRemoteDescription(offer)
     #for t in pc.getTransceivers():
     pc.addTrack(CamVideoStreamTrack())

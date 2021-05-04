@@ -137,10 +137,11 @@ class ArducamUtils(object):
 
         proc.communicate() 
 
-        # Jetson Model
+        # Jetson Model Commenté en debug
         if b"Xavier NX" in environment_vars[b"JETSON_TYPE"].strip():
             ArducamUtils.pixfmt_map = ArducamUtils.pixfmt_map_xavier_nx
 
+        #ArducamUtils.pixfmt_map = ArducamUtils.pixfmt_map_xavier_nx #ajouté en debug
         self.vd = open('/dev/video{}'.format(device_num), 'w')
         self.refresh()
 
