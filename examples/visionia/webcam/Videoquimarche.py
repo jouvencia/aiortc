@@ -55,21 +55,17 @@ class FlagVideoStreamTrack(VideoStreamTrack):
     def __init__(self):
         super().__init__()  # don't forget this!
         self.counter = 0
-        height, width = 480, 640
+        height, width = 1280, 800
 
 
         self.frames = []
-        for k in range(2):
-            print ("En sommeil")
-            ret, frame = cap.read()
-            #list_frame.append(frame)
-            frame = frame.reshape(int(h), int(w))
-            frame = arducam_utils.convert(frame)
-            cv2.imwrite('test'+'coucou'+'.jpg',frame)
+        ret, frame = cap.read()
+        frame = frame.reshape(int(h), int(w))
+        frame = arducam_utils.convert(frame)
+        cv2.imwrite('test'+'coucou'+'.jpg',frame)
 
-            img = cv2.imread('test'+'coucou'+'.jpg')
-            self.frames.append(VideoFrame.from_ndarray(numpy.array(img)))
-            print ("dors")
+        img = cv2.imread('test'+'coucou'+'.jpg')
+        self.frames.append(VideoFrame.from_ndarray(numpy.array(img)))
 
 
 
@@ -82,7 +78,6 @@ class FlagVideoStreamTrack(VideoStreamTrack):
 
         img = cv2.imread('test'+'coucou'+'.jpg')
         self.frames.append(VideoFrame.from_ndarray(numpy.array(img)))
-        time.sleep(0.2)
         pts, time_base = await self.next_timestamp()
 
         frame = self.frames[self.counter]
