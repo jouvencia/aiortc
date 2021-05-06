@@ -40,20 +40,7 @@ class CamVideoStreamTrack(VideoStreamTrack):
     def __init__(self):
         super().__init__()  # don't forget this!
         self.counter = 0
-
-
         self.frames = []
-        ret, frame = cap.read()
-        #list_frame.append(frame)
-        frame = frame.reshape(int(h), int(w))
-        frame = arducam_utils.convert(frame)
-        cv2.imwrite('test'+'coucou'+'.jpg',frame)
-
-        img = cv2.imread('test'+'coucou'+'.jpg')
-        self.frames.append(VideoFrame.from_ndarray(numpy.array(img)))
-
-
-
 
     async def recv(self):
         ret, frame = cap.read()
@@ -93,7 +80,6 @@ async def offer(request):
             pcs.discard(pc)
         
     await pc.setRemoteDescription(offer)
-    #for t in pc.getTransceivers():
     pc.addTrack(CamVideoStreamTrack())
 
     answer = await pc.createAnswer()
