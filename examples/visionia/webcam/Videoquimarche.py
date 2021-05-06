@@ -32,34 +32,19 @@ async def javascript(request):
     content = open(os.path.join(ROOT, "client.js"), "r").read()
     return web.Response(content_type="application/javascript", text=content)
 
-def show_info(arducam_utils):
-    _, firmware_version = arducam_utils.read_dev(ArducamUtils.FIRMWARE_VERSION_REG)
-    _, sensor_id = arducam_utils.read_dev(ArducamUtils.FIRMWARE_SENSOR_ID_REG)
-    _, serial_number = arducam_utils.read_dev(ArducamUtils.SERIAL_NUMBER_REG)
-    print("Firmware Version: {}".format(firmware_version))
-    print("Sensor ID: 0x{:04X}".format(sensor_id))
-    print("Serial Number: 0x{:08X}".format(serial_number))
 
 
-def resize(frame, dst_width):
-    width = frame.shape[1]
-    height = frame.shape[0]
-    scale = dst_width * 1.0 / width
-    return cv2.resize(frame, (int(scale * width), int(scale * height)))
+class CamVideoStreamTrack(VideoStreamTrack):
 
-class FlagVideoStreamTrack(VideoStreamTrack):
-    """
-    A video track that returns an animated flag.
-    """
 
     def __init__(self):
         super().__init__()  # don't forget this!
         self.counter = 0
-        height, width = 1280, 800
 
 
         self.frames = []
         ret, frame = cap.read()
+        #list_frame.append(frame)
         frame = frame.reshape(int(h), int(w))
         frame = arducam_utils.convert(frame)
         cv2.imwrite('test'+'coucou'+'.jpg',frame)
@@ -69,14 +54,15 @@ class FlagVideoStreamTrack(VideoStreamTrack):
 
 
 
+
     async def recv(self):
         ret, frame = cap.read()
         #list_frame.append(frame)
         frame = frame.reshape(int(h), int(w))
         frame = arducam_utils.convert(frame)
-        cv2.imwrite('test'+'coucou'+'.jpg',frame)
+        cv2.imwrite('cam.jpg',frame)
 
-        img = cv2.imread('test'+'coucou'+'.jpg')
+        img = cv2.imread('cam.jpg')
         self.frames.append(VideoFrame.from_ndarray(numpy.array(img)))
         pts, time_base = await self.next_timestamp()
 
@@ -108,7 +94,7 @@ async def offer(request):
         
     await pc.setRemoteDescription(offer)
     #for t in pc.getTransceivers():
-    pc.addTrack(FlagVideoStreamTrack())
+    pc.addTrack(CamVideoStreamTrack())
 
     answer = await pc.createAnswer()
     await pc.setLocalDescription(answer)
@@ -154,12 +140,12 @@ if __name__ == "__main__":
     else:
         ssl_context = None
     #Init camera
-    cmd1 = 'v4l2-ctl -d 0 -c exposure=160'
+    cmd1 = 'v4l2-ctl -d 0 -c exposure=40'
     cmd2 = 'v4l2-ctl -d 0 -C exposure'
     cap = cv2.VideoCapture(0, cv2.CAP_V4L2)
     arducam_utils = ArducamUtils(0)
     cap.set(cv2.CAP_PROP_CONVERT_RGB, arducam_utils.convert2rgb)
-    show_info(arducam_utils)
+    
 
     # Aquisition des dimentions de l'image en provenance du capteur
     w = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
