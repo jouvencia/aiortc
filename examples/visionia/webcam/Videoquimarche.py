@@ -20,8 +20,11 @@ from aiohttp import web
 from aiortc import RTCPeerConnection, RTCSessionDescription, VideoStreamTrack
 from aiortc.contrib.media import MediaPlayer
 
-ROOT = os.path.dirname(__file__)
+logging.basicConfig(level=logging.DEBUG)
 
+ROOT = os.path.dirname(__file__)
+Expo=40
+Freeram=50
 
 async def index(request):
     content = open(os.path.join(ROOT, "index.html"), "r").read()
@@ -44,26 +47,23 @@ class CamVideoStreamTrack(VideoStreamTrack):
 
     async def recv(self):
         ret, frame = cap.read()
-        #list_frame.append(frame)
-        frame = frame.reshape(int(h), int(w))
         frame = arducam_utils.convert(frame)
         cv2.imwrite('cam.jpg',frame)
 
         img = cv2.imread('cam.jpg')
+        if self.counter%(Freeram)==(0):
+            self.frames=[]
+            logging.debug('Liste vidée')
         self.frames.append(VideoFrame.from_ndarray(numpy.array(img)))
+        logging.debug('Frame dans la liste')
         pts, time_base = await self.next_timestamp()
-
-        frame = self.frames[self.counter]
+        frame = self.frames[self.counter%(Freeram)]
+        logging.debug('Frame lue')
+        logging.debug(self.counter)
         frame.pts = pts
         frame.time_base = time_base
         self.counter += 1
         return frame
-
-    def _create_rectangle(self, width, height, color):
-        data_bgr = numpy.zeros((height, width, 3), numpy.uint8)
-        data_bgr[:, :] = color
-        return data_bgr
-
 
 async def offer(request):
     params = await request.json()
@@ -126,8 +126,7 @@ if __name__ == "__main__":
     else:
         ssl_context = None
     #Init camera
-    cmd1 = 'v4l2-ctl -d 0 -c exposure=40'
-    cmd2 = 'v4l2-ctl -d 0 -C exposure'
+    cmd1 = 'v4l2-ctl -d 0 -c exposure='+str(Expo)
     cap = cv2.VideoCapture(0, cv2.CAP_V4L2)
     arducam_utils = ArducamUtils(0)
     cap.set(cv2.CAP_PROP_CONVERT_RGB, arducam_utils.convert2rgb)
@@ -136,11 +135,13 @@ if __name__ == "__main__":
     # Aquisition des dimentions de l'image en provenance du capteur
     w = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
     h = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+    logging.debug('Caméra initialisée')
 
     # needed to purge the frame with default exposure
     for i in range(6):
         subprocess.call(cmd1, shell=True)
         ret, frame = cap.read()
+        logging.debug('Temps d\'exposition réglé')
 
 
     app = web.Application()
